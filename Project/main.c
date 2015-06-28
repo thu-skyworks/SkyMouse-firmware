@@ -8,6 +8,9 @@
 #include "usb_lib.h"
 #include "esp8266.h"
 #include "ws2812.h"
+#include "mpu9250.h"
+#include "tmp102.h"
+#include "i2c.h"
 #include "func.h"
 
 static void Init()
@@ -18,6 +21,7 @@ static void Init()
 	Motor_Init();
 	USBCommon_Init();
 	WS2812_Init();
+	I2C_Lib_Init();
 }
 
 static void UpgradeMode_ESP8266(void)
@@ -52,25 +56,31 @@ int main(void)
 	if(upgradeMode)
 		UpgradeMode_ESP8266();
 
-	// char color[] = {0xff, 0xff, 0x00};
-	// WS2812_Set(0, 3, color);
-	// color[0] = 0x00;
-	// color[2] = 0xff;
-	// WS2812_Set(3, 3, color);
-	// color[0] = 0xff;
-	// color[1] = 0x00;
-	// WS2812_Set(6, 3, color);
+	char color[] = {0xff, 0xff, 0x00};
+	WS2812_Set(0, 3, color);
+	color[0] = 0x00;
+	color[2] = 0xff;
+	WS2812_Set(3, 3, color);
+	color[0] = 0xff;
+	color[1] = 0x00;
+	WS2812_Set(6, 3, color);
 
 
 	// Motor_SetSpeed(MOTOR_L|MOTOR_R, 1500, false);
 
-	LED_GREEN(true);
-	Delay_ms(1000);
-	LED_BLUE(true);
-	Delay_ms(1000);
-	LED_RED(true);
+	DBG_MSG("Who Am I: %d", MPU9250_readWhoAmI());
+	// Delay_ms(100);
+	// DBG_MSG("Who Am I: %d", MPU9250_readWhoAmI());
+
+	// LED_GREEN(true);
+	// Delay_ms(1000);
+	// LED_BLUE(true);
+	// Delay_ms(1000);
+	// LED_RED(true);
 
 	while(true) {
+		Delay_ms(1000);
+		DBG_MSG("Temp: %f", TMP102_GetTemp());
 	}
 }
 
