@@ -195,11 +195,11 @@ void USART3_IRQHandler(void)
 {
 }
 
-void TIM6_IRQHandler(void)
+void TIM7_IRQHandler(void)
 {
-  if(SET == TIM_GetITStatus(TIM6, TIM_IT_Update)) {
+  if(SET == TIM_GetITStatus(TIM7, TIM_IT_Update)) {
     CPAL_I2C_TIMEOUT_Manager();
-    TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
+    TIM_ClearITPendingBit(TIM7, TIM_IT_Update);
   }
 }
 

@@ -468,26 +468,26 @@ do{ \
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure; \
   TIM_TimeBaseStructInit(&TIM_TimeBaseStructure); \
 \
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE); \
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM7, ENABLE); \
   TIM_TimeBaseStructure.TIM_Period = 72-1; \
   TIM_TimeBaseStructure.TIM_Prescaler = 1000-1; \
-  TIM_TimeBaseInit(TIM6, &TIM_TimeBaseStructure); \
+  TIM_TimeBaseInit(TIM7, &TIM_TimeBaseStructure); \
 \
   NVIC_InitTypeDef NVIC_InitStructure; \
-  NVIC_InitStructure.NVIC_IRQChannel = TIM6_IRQn; \
+  NVIC_InitStructure.NVIC_IRQChannel = TIM7_IRQn; \
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; \
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; \
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; \
   NVIC_Init(&NVIC_InitStructure); \
 \
-  TIM_ITConfig(TIM6, TIM_IT_Update, ENABLE); \
+  TIM_ITConfig(TIM7, TIM_IT_Update, ENABLE); \
 \
-  TIM_Cmd(TIM6, ENABLE); \
+  TIM_Cmd(TIM7, ENABLE); \
 }while(0)
 
 #define _CPAL_TIMEOUT_DEINIT()         \
 do{ \
-  TIM_Cmd(TIM6, DISABLE); \
+  TIM_Cmd(TIM7, DISABLE); \
 }while(0)
 
 
