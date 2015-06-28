@@ -6,6 +6,8 @@
 #include "systick.h"
 #include "usbcommon.h"
 #include "usb_lib.h"
+#include "sdio.h"
+#include "ff.h"
 #include "esp8266.h"
 #include "ws2812.h"
 #include "mpu9250.h"
@@ -22,6 +24,69 @@ static void Init()
 	USBCommon_Init();
 	WS2812_Init();
 	I2C_Lib_Init();
+}
+
+static void FileSystem_Init(void)
+{
+	static FATFS fileSystem;
+	SD_Error Status = SD_OK;
+	SD_CardInfo SDCardInfo;
+
+	for(int i=0;i<3;i++)
+	{
+		if((Status = SD_Init()) != SD_OK){
+			DBG_MSG("SD Card Init Failed! Retrying...", 0);
+		}
+		else
+		{
+			break;
+		}
+	}
+	if(Status != SD_OK) {
+		ERR_MSG("No SD card found!", 0);
+		return;
+	}
+
+	Status = SD_GetCardInfo( &SDCardInfo );
+    if(Status != SD_OK)
+        return;
+
+    DBG_MSG("CardCapacity: %dM, Block Size %d",
+    	(int)(SDCardInfo.CardCapacity/1024/1024),
+    	(int)SDCardInfo.CardBlockSize);
+    DBG_MSG("CardType: %d", (int)SDCardInfo.CardType);
+
+	if(f_mount(0, &fileSystem) != FR_OK){
+		ERR_MSG("Failed to mount SD card!", 0);
+		return;
+	}
+
+	DBG_MSG("SD Card Init OK!", 0);
+}
+
+static void fileTest()
+{
+	static FIL fileObj; //must be static
+	char buf[16];
+	uint32_t cnt;
+	const char* file = "hello.txt";
+
+	if(f_open(&fileObj, file, FA_OPEN_EXISTING|FA_READ) != FR_OK){
+		ERR_MSG("Failed to open %s!", file);
+		f_mount(0, 0);
+		return;
+	}
+
+	if(FR_OK != f_read(&fileObj, buf, sizeof(buf), &cnt)){
+		ERR_MSG("f_read failed!");
+	}else{
+		buf[cnt] = 0;
+		DBG_MSG("Content: [%s]", buf);
+	}
+
+
+	f_close(&fileObj);
+
 }
 
 static void UpgradeMode_ESP8266(void)
@@ -56,19 +121,21 @@ int main(void)
 	if(upgradeMode)
 		UpgradeMode_ESP8266();
 
-	char color[] = {0xff, 0xff, 0x00};
-	WS2812_Set(0, 3, color);
-	color[0] = 0x00;
-	color[2] = 0xff;
-	WS2812_Set(3, 3, color);
-	color[0] = 0xff;
-	color[1] = 0x00;
-	WS2812_Set(6, 3, color);
+	// char color[] = {0xff, 0xff, 0x00};
+	// WS2812_Set(0, 3, color);
+	// color[0] = 0x00;
+	// color[2] = 0xff;
+	// WS2812_Set(3, 3, color);
+	// color[0] = 0xff;
+	// color[1] = 0x00;
+	// WS2812_Set(6, 3, color);
 
-
+	FileSystem_Init();
+	fileTest();
+	// WavePlayer_Init();
 	// Motor_SetSpeed(MOTOR_L|MOTOR_R, 1500, false);
 
-	DBG_MSG("Who Am I: %d", MPU9250_readWhoAmI());
+	// DBG_MSG("Who Am I: %d", MPU9250_readWhoAmI());
 	// Delay_ms(100);
 	// DBG_MSG("Who Am I: %d", MPU9250_readWhoAmI());
 

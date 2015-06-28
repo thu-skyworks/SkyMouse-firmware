@@ -49,4 +49,8 @@
 #define USB_DET_PORT GPIOC
 #define USB_DET_PIN  GPIO_Pin_0
 
+#define SD_DETECT_GPIO_CLK  RCC_APB2Periph_GPIOC
+#define SD_DETECT_GPIO_PORT GPIOC
+#define SD_DETECT_PIN       GPIO_Pin_13
+
 #endif

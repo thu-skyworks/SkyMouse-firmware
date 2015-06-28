@@ -25,6 +25,7 @@
 #include "stm32f10x_it.h"
 #include "usb_lib.h"
 #include "usb_istr.h"
+#include "sdioLL.h"
 #include "esp8266.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
@@ -201,6 +202,33 @@ void TIM7_IRQHandler(void)
     CPAL_I2C_TIMEOUT_Manager();
     TIM_ClearITPendingBit(TIM7, TIM_IT_Update);
   }
+}
+
+void TIM6_DAC_IRQHandler(void)
+{
+  if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET)
+  {
+    // WavePlayer_TIM_IT_Handler();
+    /* Clear TIM6 update interrupt */
+    TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
+  }
+}
+
+void DMA1_Channel3_IRQHandler(void)
+{
+  // WavePlayer_DMA_IT_Handler();
+}
+
+void SDIO_IRQHandler(void)
+{
+  /* Process All SDIO Interrupt Sources */
+  SD_ProcessIRQSrc();
+}
+
+void SD_SDIO_DMA_IRQHANDLER(void)
+{
+  /* Process DMA2 Stream3 or DMA2 Stream6 Interrupt Sources */
+  SD_ProcessDMAIRQ();
 }
 
 /**

@@ -100,6 +100,8 @@ SRC += $(wildcard $(SRC_DIR)drivers/system/*.c)
 SRC += $(wildcard $(SRC_DIR)drivers/sensors/*.c)
 SRC += $(wildcard $(SRC_DIR)drivers/actuators/*.c)
 SRC += $(wildcard $(SRC_DIR)drivers/communication/*.c)
+SRC += $(wildcard $(SRC_DIR)fatfs/*.c)
+SRC += $(wildcard $(SRC_DIR)fatfs/option/ccsbcs.c)
 
 # List C source files here which must be compiled in ARM-Mode.
 # use file-extension c for "c-only"-files
@@ -167,6 +169,7 @@ EXTRAINCDIRS += ../drivers/system
 EXTRAINCDIRS += ../drivers/sensors
 EXTRAINCDIRS += ../drivers/actuators
 EXTRAINCDIRS += ../drivers/communication
+EXTRAINCDIRS += ../fatfs
 EXTRAINCDIRS += ../config
 
 # List any extra directories to look for library files here.
