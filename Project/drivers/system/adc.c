@@ -40,6 +40,7 @@ void ADC_Channel_Config(GPIO_TypeDef* GPIOx, uint16_t pin, uint8_t channel, uint
 
     GPIO_Init(GPIOx, &GPIO_InitStructure);
 
+    DBG_MSG("Regular %d is channel %d", rank, channel);
     ADC_RegularChannelConfig(ADC1, channel, rank, ADC_SampleTime_13Cycles5);
 }
 

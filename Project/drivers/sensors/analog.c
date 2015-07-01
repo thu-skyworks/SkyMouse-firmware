@@ -2,13 +2,12 @@
 #include "adc.h"
 
 static bool calibrated;
-static bool enabled_channels[8];
-static uint8_t channel_rank[8]; //1-based
-static volatile uint16_t values[8];
+static bool enabled_channels[16];
+static uint8_t channel_rank[16]; //1-based
+static volatile uint16_t values[16];
 
 static void getIOByChannel(uint8_t channel, GPIO_TypeDef** GPIOx, uint16_t* pin)
 {
-    *GPIOx = GPIOA;
     switch(channel){
         case 0:
             *pin = GPIO_Pin_0;
@@ -34,7 +33,37 @@ static void getIOByChannel(uint8_t channel, GPIO_TypeDef** GPIOx, uint16_t* pin)
         case 7:
             *pin = GPIO_Pin_7;
             break;
+        case 8:
+            *pin = GPIO_Pin_0;
+            break;
+        case 9:
+            *pin = GPIO_Pin_1;
+            break;
+        case 10:
+            *pin = GPIO_Pin_0;
+            break;
+        case 11:
+            *pin = GPIO_Pin_1;
+            break;
+        case 12:
+            *pin = GPIO_Pin_2;
+            break;
+        case 13:
+            *pin = GPIO_Pin_3;
+            break;
+        case 14:
+            *pin = GPIO_Pin_4;
+            break;
+        case 15:
+            *pin = GPIO_Pin_5;
+            break;
     }
+    if(channel <= 7)
+        *GPIOx = GPIOA;
+    else if(8<=channel && channel<=9)
+        *GPIOx = GPIOB;
+    else if(10<=channel && channel<=15)
+        *GPIOx = GPIOC;
 }
 
 static void refresh_adc_channels()
