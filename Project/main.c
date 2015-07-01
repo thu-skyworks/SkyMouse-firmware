@@ -145,9 +145,24 @@ int main(void)
 	// Delay_ms(1000);
 	// LED_RED(true);
 
+
+	Analog_SetChannel(PHOTOTRANS_1_CH, true);
+	Analog_SetChannel(PHOTOTRANS_2_CH, true);
+	Analog_SetChannel(PHOTOTRANS_3_CH, true);
+	Analog_SetChannel(PHOTOTRANS_4_CH, true);
+	Analog_SetChannel(PHOTOTRANS_5_CH, true);
+
 	while(true) {
 		Delay_ms(1000);
 		DBG_MSG("Temp: %f", TMP102_GetTemp());
+
+		DBG_MSG("ADC: %d %d %d %d %d",
+			Analog_GetChannelValue(PHOTOTRANS_1_CH),
+			Analog_GetChannelValue(PHOTOTRANS_2_CH),
+			Analog_GetChannelValue(PHOTOTRANS_3_CH),
+			Analog_GetChannelValue(PHOTOTRANS_4_CH),
+			Analog_GetChannelValue(PHOTOTRANS_5_CH)
+		);
 	}
 }
 

@@ -5,6 +5,15 @@
 //All sensors with i2c interface is connected to I2C1
 #define I2C_HOST_DEV I2C1_DevStructure
 
+#define REFLECTIVE_L_CH 7
+#define REFLECTIVE_R_CH 6
+
+#define PHOTOTRANS_1_CH 15
+#define PHOTOTRANS_2_CH 14
+#define PHOTOTRANS_3_CH 5
+#define PHOTOTRANS_4_CH 13
+#define PHOTOTRANS_5_CH 12
+
 #define MPU9250_INT_PORT GPIOB
 #define MPU9250_INT_PIN  GPIO_Pin_9
 
