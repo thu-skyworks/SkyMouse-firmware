@@ -24,6 +24,7 @@ static void Init()
 	USBCommon_Init();
 	WS2812_Init();
 	I2C_Lib_Init();
+	MPU9250_InitProcedure();
 }
 
 static void FileSystem_Init(void)
@@ -145,24 +146,50 @@ int main(void)
 	// Delay_ms(1000);
 	// LED_RED(true);
 
+	// Reflective_Start();
 
-	Analog_SetChannel(PHOTOTRANS_1_CH, true);
-	Analog_SetChannel(PHOTOTRANS_2_CH, true);
-	Analog_SetChannel(PHOTOTRANS_3_CH, true);
-	Analog_SetChannel(PHOTOTRANS_4_CH, true);
-	Analog_SetChannel(PHOTOTRANS_5_CH, true);
+	// Analog_SetChannel(PHOTOTRANS_1_CH, true);
+	// Analog_SetChannel(PHOTOTRANS_2_CH, true);
+	// Analog_SetChannel(PHOTOTRANS_3_CH, true);
+	// Analog_SetChannel(PHOTOTRANS_4_CH, true);
+	// Analog_SetChannel(PHOTOTRANS_5_CH, true);
 
+	SysTick_t tick = 0;
 	while(true) {
-		Delay_ms(1000);
-		DBG_MSG("Temp: %f", TMP102_GetTemp());
+		float accel[3], gyro[3], mag[3];
+		float yaw, pitch, roll;
 
-		DBG_MSG("ADC: %d %d %d %d %d",
-			Analog_GetChannelValue(PHOTOTRANS_1_CH),
-			Analog_GetChannelValue(PHOTOTRANS_2_CH),
-			Analog_GetChannelValue(PHOTOTRANS_3_CH),
-			Analog_GetChannelValue(PHOTOTRANS_4_CH),
-			Analog_GetChannelValue(PHOTOTRANS_5_CH)
-		);
+		if(MPU9250_CheckNewSample()){
+			MPU9250_Get9AxisData(accel, gyro, mag);
+			MPU9250_CalcOrientation(&yaw, &pitch, &roll);
+		}
+
+		if(GetSystemTick() - tick > 1000){
+			DBG_MSG("Temperature: %f", TMP102_GetTemp());
+
+			// DBG_MSG("ADC: %d %d %d %d %d",
+			// 	Analog_GetChannelValue(PHOTOTRANS_1_CH),
+			// 	Analog_GetChannelValue(PHOTOTRANS_2_CH),
+			// 	Analog_GetChannelValue(PHOTOTRANS_3_CH),
+			// 	Analog_GetChannelValue(PHOTOTRANS_4_CH),
+			// 	Analog_GetChannelValue(PHOTOTRANS_5_CH)
+			// );
+			for (int i = 0; i < 3; ++i)
+			{
+				DBG_MSG("MPU-Accel-%c: %f", i+'X', accel[i]);
+			}
+			for (int i = 0; i < 3; ++i)
+			{
+				DBG_MSG("MPU-Gyro-%c: %f", i+'X', gyro[i]);
+			}
+			for (int i = 0; i < 3; ++i)
+			{
+				DBG_MSG("MPU-Mag-%c: %f", i+'X', mag[i]);
+			}
+			DBG_MSG("MPU-Temp: %f", MPU9250_GetTemperature());
+			DBG_MSG("yaw: %f, pitch: %f, roll: %f", yaw, pitch, roll);
+			tick = GetSystemTick();
+		}
 	}
 }
 
