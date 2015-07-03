@@ -3,8 +3,8 @@
 **
 **  File        : stm32_flash.ld
 **
-**  Abstract    : Linker script for STM32F103VB Device with
-**                128KByte FLASH, 20KByte RAM
+**  Abstract    : Linker script for STM32F103RC Device with
+**                256KByte FLASH, 48KByte RAM
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -33,7 +33,7 @@
 ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
-_estack = 0x20005000;    /* end of 20K RAM */
+_estack = 0x2000c000;    /* end of 48K RAM */
 
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0;      /* required amount of heap  */
@@ -44,8 +44,8 @@ MEMORY
 {
   VECTOR (rx)     : ORIGIN = 0x08000000, LENGTH = 1K
   EEPROM (rx)     : ORIGIN = 0x08000400, LENGTH = 2K
-  FLASH (rx)      : ORIGIN = 0x08000C00, LENGTH = 125K
-  RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 20K
+  FLASH (rx)      : ORIGIN = 0x08000C00, LENGTH = 253K
+  RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 48K
   MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
 }
 
