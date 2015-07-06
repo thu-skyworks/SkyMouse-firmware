@@ -13,6 +13,7 @@
 #include "mpu9250.h"
 #include "tmp102.h"
 #include "i2c.h"
+#include "waveplayer.h"
 #include "func.h"
 
 static void Init()
@@ -24,7 +25,6 @@ static void Init()
 	USBCommon_Init();
 	WS2812_Init();
 	I2C_Lib_Init();
-	MPU9250_InitProcedure();
 }
 
 static void FileSystem_Init(void)
@@ -33,6 +33,7 @@ static void FileSystem_Init(void)
 	SD_Error Status = SD_OK;
 	SD_CardInfo SDCardInfo;
 
+	Delay_ms(1000);
 	for(int i=0;i<3;i++)
 	{
 		if((Status = SD_Init()) != SD_OK){
@@ -112,39 +113,49 @@ static void UpgradeMode_ESP8266(void)
 
 int main(void)
 {
-	bool upgradeMode = ESP8266_UpgradeModeDetected();
+	// bool upgradeMode = ESP8266_UpgradeModeDetected();
 
 	Init();
 
 	DBG_MSG("----- Power On -----");
-	ESP8266_Init(upgradeMode);
+	// ESP8266_Init(upgradeMode);
 
-	if(upgradeMode)
-		UpgradeMode_ESP8266();
+	// if(upgradeMode)
+	// 	UpgradeMode_ESP8266();
 
-	// char color[] = {0xff, 0xff, 0x00};
-	// WS2812_Set(0, 3, color);
-	// color[0] = 0x00;
-	// color[2] = 0xff;
-	// WS2812_Set(3, 3, color);
-	// color[0] = 0xff;
-	// color[1] = 0x00;
-	// WS2812_Set(6, 3, color);
+	// if(USBDevice_PlugIn())
+	// {
+	// 	DBG_MSG( "Usb Init Started");
+	// 	USB_Init();
+	// 	while(true);
+	// }else{
+	// 	DBG_MSG("FileSystem_Init");
+	// 	FileSystem_Init();
+	// 	fileTest();
+	// }
 
-	FileSystem_Init();
-	fileTest();
+	char color[] = {0xff, 0xff, 0x00};
+	WS2812_Set(0, 3, color);
+	color[0] = 0x00;
+	color[2] = 0xff;
+	WS2812_Set(3, 3, color);
+	color[0] = 0xff;
+	color[1] = 0x00;
+	WS2812_Set(6, 3, color);
+
+	LED_RED(true);
+	Delay_ms(200);
+	LED_GREEN(true);
+	Delay_ms(200);
+	LED_BLUE(true);
+	
+
+	DBG_MSG("Temperature: %f", TMP102_GetTemp());
+	DBG_MSG("Temperature: %f", TMP102_GetTemp());
+
 	// WavePlayer_Init();
-	// Motor_SetSpeed(MOTOR_L|MOTOR_R, 1500, false);
-
-	// DBG_MSG("Who Am I: %d", MPU9250_readWhoAmI());
-	// Delay_ms(100);
-	// DBG_MSG("Who Am I: %d", MPU9250_readWhoAmI());
-
-	// LED_GREEN(true);
-	// Delay_ms(1000);
-	// LED_BLUE(true);
-	// Delay_ms(1000);
-	// LED_RED(true);
+	// WavePlayerMenu_Start("/", "teq.wav");
+	// WavePlayer_Start();
 
 	// Reflective_Start();
 
@@ -154,17 +165,21 @@ int main(void)
 	// Analog_SetChannel(PHOTOTRANS_4_CH, true);
 	// Analog_SetChannel(PHOTOTRANS_5_CH, true);
 
+	Delay_ms(2000);
+
+	MPU9250_InitProcedure();
+
 	SysTick_t tick = 0;
 	while(true) {
 		float accel[3], gyro[3], mag[3];
 		float yaw, pitch, roll;
 
-		if(MPU9250_CheckNewSample()){
-			MPU9250_Get9AxisData(accel, gyro, mag);
-			MPU9250_CalcOrientation(&yaw, &pitch, &roll);
-		}
 
 		if(GetSystemTick() - tick > 1000){
+			if(MPU9250_CheckNewSample()){
+				MPU9250_Get9AxisData(accel, gyro, mag);
+				MPU9250_CalcOrientation(&yaw, &pitch, &roll);
+			}
 			DBG_MSG("Temperature: %f", TMP102_GetTemp());
 
 			// DBG_MSG("ADC: %d %d %d %d %d",
