@@ -408,6 +408,7 @@ SD_Error SD_Init(void)
 
   SDIO_DeInit();
 
+  printf("%s\r\n", "Power ON");
   errorstatus = SD_PowerON();
 
   if (errorstatus != SD_OK)
@@ -416,6 +417,7 @@ SD_Error SD_Init(void)
     return(errorstatus);
   }
 
+  printf("%s\r\n", "Init Card");
   errorstatus = SD_InitializeCards();
 
   if (errorstatus != SD_OK)
@@ -435,18 +437,22 @@ SD_Error SD_Init(void)
   SDIO_Init(&SDIO_InitStructure);
 
   /*----------------- Read CSD/CID MSD registers ------------------*/
+  printf("%s\r\n", "Get Card Info");
   errorstatus = SD_GetCardInfo(&SDCardInfo);
 
   if (errorstatus == SD_OK)
   {
     /*----------------- Select Card --------------------------------*/
+  printf("%s\r\n", "Deselects");
     errorstatus = SD_SelectDeselect((uint32_t) (SDCardInfo.RCA << 16));
   }
 
   if (errorstatus == SD_OK)
   {
+  printf("%s\r\n", "Enable Wide");
     errorstatus = SD_EnableWideBusOperation(SDIO_BusWide_4b);
   }  
+  printf("%s\r\n", "Done");
 
   return(errorstatus);
 }
@@ -501,6 +507,7 @@ SDCardState SD_GetState(void)
   }
   else
   {
+    printf("Error: SD Card is not present\r\n");
     return SD_CARD_ERROR;
   }
 }
