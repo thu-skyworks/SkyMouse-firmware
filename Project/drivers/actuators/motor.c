@@ -45,7 +45,7 @@ void Motor_Init()
     TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
     /* Time base configuration */        
     TIM_TimeBaseStructure.TIM_Period = 65535;
-    TIM_TimeBaseStructure.TIM_Prescaler = 15;
+    TIM_TimeBaseStructure.TIM_Prescaler = 10;
 
     TIM_TimeBaseInit(MOTORA_PWM_TIM, &TIM_TimeBaseStructure);
     TIM_TimeBaseInit(MOTORB_PWM_TIM, &TIM_TimeBaseStructure);
