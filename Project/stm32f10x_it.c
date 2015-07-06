@@ -189,7 +189,7 @@ void USBWakeUp_IRQHandler(void)
 
 void USART2_IRQHandler(void)
 {
-  ESP8266_USART_IT_Handler();
+  // ESP8266_USART_IT_Handler();
 }
 
 void USART3_IRQHandler(void)
@@ -204,19 +204,21 @@ void TIM7_IRQHandler(void)
   }
 }
 
-void TIM6_DAC_IRQHandler(void)
+#if 0
+void TIM6_IRQHandler(void)
 {
   if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET)
   {
-    // WavePlayer_TIM_IT_Handler();
+    WavePlayer_TIM_IT_Handler();
     /* Clear TIM6 update interrupt */
     TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
   }
 }
+#endif
 
-void DMA1_Channel3_IRQHandler(void)
+void DMA2_Channel3_IRQHandler(void)
 {
-  // WavePlayer_DMA_IT_Handler();
+  WavePlayer_DMA_IT_Handler();
 }
 
 void SDIO_IRQHandler(void)
