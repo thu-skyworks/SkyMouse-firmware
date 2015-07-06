@@ -23,10 +23,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
-#include "usb_lib.h"
-#include "usb_istr.h"
-#include "sdioLL.h"
-#include "esp8266.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
@@ -145,32 +141,6 @@ void SysTick_Handler(void)
   IncSysTickCounter();
 }
 
-/*******************************************************************************
-* Function Name  : USB_LP_CAN1_RX0_IRQHandler
-* Description    : This function handles USB Low Priority or CAN RX0 interrupts
-*                  requests.
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
-void USB_LP_CAN1_RX0_IRQHandler(void)
-{
-  USB_Istr();
-}
-
-/*******************************************************************************
-* Function Name  : USB_FS_WKUP_IRQHandler
-* Description    : This function handles USB WakeUp interrupt request.
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
-
-void USBWakeUp_IRQHandler(void)
-{
-  EXTI_ClearITPendingBit(EXTI_Line18);
-}
-
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
@@ -187,14 +157,6 @@ void USBWakeUp_IRQHandler(void)
 {
 }*/
 
-void USART2_IRQHandler(void)
-{
-  // ESP8266_USART_IT_Handler();
-}
-
-void USART3_IRQHandler(void)
-{
-}
 
 void TIM7_IRQHandler(void)
 {
@@ -204,34 +166,6 @@ void TIM7_IRQHandler(void)
   }
 }
 
-#if 0
-void TIM6_IRQHandler(void)
-{
-  if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET)
-  {
-    WavePlayer_TIM_IT_Handler();
-    /* Clear TIM6 update interrupt */
-    TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
-  }
-}
-#endif
-
-void DMA2_Channel3_IRQHandler(void)
-{
-  WavePlayer_DMA_IT_Handler();
-}
-
-void SDIO_IRQHandler(void)
-{
-  /* Process All SDIO Interrupt Sources */
-  SD_ProcessIRQSrc();
-}
-
-void SD_SDIO_DMA_IRQHANDLER(void)
-{
-  /* Process DMA2 Stream3 or DMA2 Stream6 Interrupt Sources */
-  SD_ProcessDMAIRQ();
-}
 
 /**
   * @}
