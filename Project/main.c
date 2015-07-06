@@ -34,5 +34,18 @@ int main(void)
 			void Delay_ms(unsigned int n);
 			产生n毫秒的延时，即使得代码停止运行n毫秒。以便实现闪烁的效果。
 		*/
+		LED_RED(true);
+		Delay_ms(500);
+		LED_GREEN(true);
+		Delay_ms(500);
+		LED_BLUE(true);
+		Delay_ms(500);
+
+		LED_RED(false);
+		Delay_ms(500);
+		LED_GREEN(false);
+		Delay_ms(500);
+		LED_BLUE(false);
+		Delay_ms(500);
 	}
 }
