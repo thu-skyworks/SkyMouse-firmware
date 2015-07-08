@@ -6,6 +6,7 @@
 #include "systick.h"
 #include "i2c.h"
 #include "tmp102.h"
+#include "wave.h"
 #include "func.h"
 
 static void Init()
@@ -24,31 +25,13 @@ int main(void)
 
 	printf("Hello World!\r\n");
 
+	//调用TMP102温度获取函数
 	printf("TMP102 temperature: %f\r\n", TMP102_GetTemp());
 
+	//调用信号发生器程序
+	WaveGeneration_Init();
+	WaveGeneration_Start();
 
 	while(true) {
-		/* YOUR CODE HERE 
-		任务：使得小老鼠正面的全彩LED，按照红绿蓝顺序依次点亮
-		提示：在led.c文件中，已经实现了GPIO的初始化和控制的代码。
-			请参考其中的代码实现，或者直接调用。LED引脚关系如下：
-			Red->PB12, Green->PB1, Blue->PB15
-		辅助函数：
-			void Delay_ms(unsigned int n);
-			产生n毫秒的延时，即使得代码停止运行n毫秒。以便实现闪烁的效果。
-		*/
-		LED_RED(true);
-		Delay_ms(500);
-		LED_GREEN(true);
-		Delay_ms(500);
-		LED_BLUE(true);
-		Delay_ms(500);
-
-		LED_RED(false);
-		Delay_ms(500);
-		LED_GREEN(false);
-		Delay_ms(500);
-		LED_BLUE(false);
-		Delay_ms(500);
 	}
 }
