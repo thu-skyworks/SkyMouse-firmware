@@ -18,15 +18,17 @@ float TMP102_GetTemp()
     You can alter it to a writeable register and alter some of the configuration -
     the sensor is capable of alerting you if the temperature is above or below a specified threshold. */
 
-    /* YOUR CODE HERE 
-    任务：实现TMP102传感器的I2C通信
-    提示：根据TMP102手册说明，获取温度的流程是先写入一个字节0，再读取两个字节至data数组。
-         你不需要初始化CPAL，因为其已经在i2c.c中完成。
-         TMP102的地址已经有宏定义TMP102_I2C_ADDRESS。
-    相关函数：
-        CPAL_I2C_Write、CPAL_I2C_Read
-        使用方法见课件和CPAL手册
-    */
+    CPAL_TransferTypeDef CPAL_Transfer={data,1,TMP102_I2C_ADDRESS};
+    I2C1_DevStructure.pCPAL_TransferTx = &CPAL_Transfer;
+    CPAL_I2C_Write(&I2C1_DevStructure);
+    while (I2C1_DevStructure.CPAL_State != CPAL_STATE_READY &&
+        I2C1_DevStructure.CPAL_State != CPAL_STATE_ERROR);
+
+    CPAL_Transfer.wNumData = 2;
+    I2C1_DevStructure.pCPAL_TransferRx = &CPAL_Transfer;
+    CPAL_I2C_Read(&I2C1_DevStructure);
+    while (I2C1_DevStructure.CPAL_State != CPAL_STATE_READY &&
+        I2C1_DevStructure.CPAL_State != CPAL_STATE_ERROR);
 
 
     firstbyte      = (data[0]);

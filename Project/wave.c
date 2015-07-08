@@ -39,19 +39,12 @@ void WaveGeneration_Init()
 void WaveGeneration_Start(void)
 {
     DAC_Cmd(SPEAKER_DAC_CH, ENABLE);
-    
-    /* YOUR CODE HERE 
-    任务：通过DAC软件触发模式产生约1KHz正弦函数信号
-    提示：sin_function为预先生成的128点的正弦函数表，通过反复遍历该表，
-         并将数值更新到DAC上，即可产生正弦信号输出。信号频率由更新的速率
-         决定，可以在每次更新后增加延时，当然这样得到的频率并不如通过定时器
-         触发准确。
-         进一步可以尝试使用别的函数表，产生别的信号，在示波器上观测。
-    相关函数：
-        void Delay_us(unsigned int n);
-        产生n微秒的延时。
-        
-        DAC_SetChannel1Data、DAC_SoftwareTriggerCmd
-        使用方法见课件和固件库手册
-    */
+    while(true){
+        for (int i = 0; i < sizeof(sin_function); ++i)
+        {
+            DAC_SetChannel1Data(DAC_Align_12b_R, sin_function[i]);
+            DAC_SoftwareTriggerCmd(SPEAKER_DAC_CH, ENABLE);
+            Delay_us(14);
+        }
+    }
 }
