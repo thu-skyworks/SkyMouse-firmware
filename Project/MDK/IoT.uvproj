@@ -364,7 +364,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Libraries\CMSIS\CM3\CoreSupport;..\..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;..\..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\..\Libraries\STM32_USB-FS-Device_Driver\inc;..\;..\usb\inc;..\config;..\drivers\system;..\drivers\actuators;..\drivers\sensors;..\..\Libraries\STM32_CPAL_Driver\devices\stm32f10x;..\..\Libraries\STM32_CPAL_Driver\inc</IncludePath>
+              <IncludePath>..\..\Libraries\CMSIS\CM3\CoreSupport;..\..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;..\..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\..\Libraries\STM32_USB-FS-Device_Driver\inc;..\;..\usb\inc;..\config;..\drivers\system;..\drivers\actuators;..\drivers\sensors;..\..\Libraries\STM32_CPAL_Driver\devices\stm32f10x;..\..\Libraries\STM32_CPAL_Driver\inc;..\fatfs</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -607,6 +607,16 @@
               <FileType>1</FileType>
               <FilePath>..\drivers\sensors\tmp102.c</FilePath>
             </File>
+            <File>
+              <FileName>sdioLL.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\system\sdioLL.c</FilePath>
+            </File>
+            <File>
+              <FileName>sdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\system\sdio.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -647,6 +657,11 @@
               <FileType>1</FileType>
               <FilePath>..\wave.c</FilePath>
             </File>
+            <File>
+              <FileName>waveplayer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\waveplayer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -661,6 +676,31 @@
               <FileName>func.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\config\func.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>fatfs</GroupName>
+          <Files>
+            <File>
+              <FileName>diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\fatfs\diskio.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\fatfs\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>ccsbcs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\fatfs\option\ccsbcs.c</FilePath>
+            </File>
+            <File>
+              <FileName>ffconf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\fatfs\ffconf.h</FilePath>
             </File>
           </Files>
         </Group>

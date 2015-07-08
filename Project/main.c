@@ -7,6 +7,9 @@
 #include "i2c.h"
 #include "tmp102.h"
 #include "wave.h"
+#include "waveplayer.h"
+#include "ff.h"
+#include "sdio.h"
 #include "func.h"
 
 static void Init()
@@ -16,6 +19,44 @@ static void Init()
 	USARTx_Config(USART_DBG, 115200);
 	Motor_Init();
 	I2C_Lib_Init();
+}
+
+static void FileSystem_Init(void)
+{
+	static FATFS fileSystem;
+	SD_Error Status = SD_OK;
+	SD_CardInfo SDCardInfo;
+
+	for(int i=0;i<3;i++)
+	{
+		if((Status = SD_Init()) != SD_OK){
+			DBG_MSG("SD Card Init Failed! Retrying...");
+		}
+		else
+		{
+			break;
+		}
+	}
+	if(Status != SD_OK) {
+		ERR_MSG("No SD card found!");
+		return;
+	}
+
+	Status = SD_GetCardInfo( &SDCardInfo );
+    if(Status != SD_OK)
+        return;
+
+    DBG_MSG("CardCapacity: %dM, Block Size %d",
+    	(int)(SDCardInfo.CardCapacity/1024/1024),
+    	(int)SDCardInfo.CardBlockSize);
+    DBG_MSG("CardType: %d", (int)SDCardInfo.CardType);
+
+	if(f_mount(0, &fileSystem) != FR_OK){
+		ERR_MSG("Failed to mount SD card!");
+		return;
+	}
+
+	DBG_MSG("SD Card Init OK!");
 }
 
 int main(void)
@@ -29,8 +70,13 @@ int main(void)
 	printf("TMP102 temperature: %f\r\n", TMP102_GetTemp());
 
 	//调用信号发生器程序
-	WaveGeneration_Init();
-	WaveGeneration_Start();
+	// WaveGeneration_Init();
+	// WaveGeneration_Start();
+
+	Delay_ms(2000);
+	FileSystem_Init();
+	WavePlayer_Init();
+	WavePlayerMenu_Start("/", "test.wav");
 
 	while(true) {
 	}
