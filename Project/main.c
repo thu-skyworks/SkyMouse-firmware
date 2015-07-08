@@ -5,6 +5,7 @@
 #include "motor.h"
 #include "systick.h"
 #include "i2c.h"
+#include "tmp102.h"
 #include "func.h"
 
 static void Init()
@@ -22,6 +23,8 @@ int main(void)
 	Init();
 
 	printf("Hello World!\r\n");
+
+	printf("TMP102 temperature: %f\r\n", TMP102_GetTemp());
 
 
 	while(true) {

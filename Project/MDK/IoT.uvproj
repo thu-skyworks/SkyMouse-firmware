@@ -602,6 +602,11 @@
               <FileType>1</FileType>
               <FilePath>..\drivers\system\usart.c</FilePath>
             </File>
+            <File>
+              <FileName>tmp102.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\sensors\tmp102.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
