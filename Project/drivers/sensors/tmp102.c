@@ -1,7 +1,7 @@
 #include "tmp102.h"
 #include "cpal_i2c.h"
 
-#define TMP102_I2C_ADDRESS 72 /* This is the I2C address for our chip.
+#define TMP102_I2C_ADDRESS 144 /* This is the I2C address for our chip.
 This value is correct if you tie the ADD0 pin to ground. See the datasheet for some other values. */
 
 float TMP102_GetTemp()

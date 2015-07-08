@@ -65,6 +65,7 @@ int main(void)
 {
 
 	Init();
+	Delay_ms(100);
 
 	printf("Hello World!\r\n");
 
