@@ -166,18 +166,6 @@ void TIM7_IRQHandler(void)
   }
 }
 
-#if 0
-void TIM6_IRQHandler(void)
-{
-  if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET)
-  {
-    WavePlayer_TIM_IT_Handler();
-    /* Clear TIM6 update interrupt */
-    TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
-  }
-}
-#endif
-
 void DMA2_Channel3_IRQHandler(void)
 {
   WavePlayer_DMA_IT_Handler();

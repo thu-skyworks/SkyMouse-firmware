@@ -14,6 +14,7 @@
 
 static void Init()
 {
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	SysTick_Init();
 	LED_Config();
 	USARTx_Config(USART_DBG, 115200);
@@ -27,6 +28,7 @@ static void FileSystem_Init(void)
 	SD_Error Status = SD_OK;
 	SD_CardInfo SDCardInfo;
 
+	Delay_ms(1000);
 	for(int i=0;i<3;i++)
 	{
 		if((Status = SD_Init()) != SD_OK){
@@ -70,9 +72,10 @@ int main(void)
 	printf("TMP102 temperature: %f\r\n", TMP102_GetTemp());
 
 	//调用信号发生器程序
-	// WaveGeneration_Init();
-	// WaveGeneration_Start();
+	WaveGeneration_Init();
+	WaveGeneration_Start();
 
+	//音乐播放器demo，若要使用，请注释掉上面WaveGeneration的两个函数
 	Delay_ms(2000);
 	FileSystem_Init();
 	WavePlayer_Init();

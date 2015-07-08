@@ -171,118 +171,6 @@ void WavePlayer_Init(void)
 }
 
 /**
-  * @brief  Returns the Wave file status.
-  * @param  None
-  * @retval Wave file status.
-  */
-ErrorCode Get_WaveFileStatus(void)
-{
-    return (WaveFileStatus);
-}
-
-/**
-  * @brief  Start wave playing
-  * @param  None
-  * @retval None
-  */
-uint8_t WavePlayer_Start(void)
-{
-    WavePlayer_Init();
-
-    /* Read the Speech wave file status */
-    WaveFileStatus = WavePlayer_WaveParsing("/", "test.wav", &wavelen);
-
-    if (WaveFileStatus == Valid_WAVE_File) { /* the .WAV file is valid */
-        /* Set WaveDataLenght to the Speech wave length */
-        WaveDataLength = WAVE_Format.DataSize;
-
-        TIM_SetAutoreload(TIM6, TIM6ARRValue);
-        DBG_MSG("TIM6ARRValue=%d", TIM6ARRValue);
-
-        /* Start TIM6 */
-        TIM_Cmd(TIM6, ENABLE);
-    } else {
-        ERR_MSG("Invalid wav file");
-        return 1;
-    }
-    return 0;
-}
-
-/**
-  * @brief  Stop wave playing
-  * @param  None
-  * @retval None
-  */
-void WavePlayer_Stop(void)
-{
-    DBG_MSG("stopped");
-    /* Disable TIM6 update interrupt */
-    TIM_ITConfig(TIM6, TIM_IT_Update, DISABLE);
-    /* Disable TIM6 */
-    TIM_Cmd(TIM6, DISABLE);
-}
-
-/**
-  * @brief  Pause wave playing
-  * @param  None
-  * @retval None
-  */
-void WavePlayer_RePlay(void)
-{
-    TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
-    /* Enable TIM6 update interrupt */
-    TIM_ITConfig(TIM6, TIM_IT_Update, ENABLE);
-}
-
-/**
-  * @brief  Pause wave playing
-  * @param  None
-  * @retval None
-  */
-void WavePlayer_Pause(void)
-{
-    TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
-    /* Disable TIM6 update interrupt */
-    TIM_ITConfig(TIM6, TIM_IT_Update, DISABLE);
-}
-
-#if 0
-/**
-  * @brief  Decrements the played wave data length.
-  * @param  None
-  * @retval Current value of  WaveDataLength variable.
-  */
-void WavePointerUpdate(uint32_t value)
-{
-    DFS_Seek(&fiwave, value, Wavebuffer2);
-}
-#endif
-
-/**
-  * @brief  Decrements the played wave data length.
-  * @param  None
-  * @retval Current value of  WaveDataLength variable.
-  */
-uint32_t Decrement_WaveDataLength(void)
-{
-    if (WaveDataLength != 0x00) {
-        WaveDataLength--;
-    }
-    return (WaveDataLength);
-}
-
-
-/**
-  * @brief  Decrements the played wave data length.
-  * @param  None
-  * @retval Current value of  WaveDataLength variable.
-  */
-void Set_WaveDataLength(uint32_t value)
-{
-    WaveDataLength = value;
-}
-
-/**
   * @brief  Checks the format of the .WAV file and gets information about
   *   the audio format. This is done by reading the value of a
   *   number of parameters stored in the file header and comparing
@@ -517,7 +405,6 @@ uint8_t WavePlayerMenu_Start(uint8_t *DirName, uint8_t *FileName)
     while (WaveDataLength) {
         // DFS_ReadFile(&fiwave, sector, Wavebuffer2, &var, SECTOR_SIZE);
         f_read(&fiwave, Wavebuffer2, SECTOR_SIZE, &var);
-        DBG_MSG("read1: %d", var);
         if (WaveDataLength) WaveDataLength -= 512;
         if (WaveDataLength < 512) WaveDataLength = 0;
         while (DMA_GetFlagStatus(DMA2_FLAG_TC3) == RESET) {
@@ -539,7 +426,6 @@ uint8_t WavePlayerMenu_Start(uint8_t *DirName, uint8_t *FileName)
 
         // DFS_ReadFile(&fiwave, sector, Wavebuffer, &var, SECTOR_SIZE);
         f_read(&fiwave, Wavebuffer, SECTOR_SIZE, &var);
-        DBG_MSG("read2: %d", var);
         if (WaveDataLength) WaveDataLength -= 512;
         if (WaveDataLength < 512) WaveDataLength = 0;
 
@@ -560,6 +446,7 @@ uint8_t WavePlayerMenu_Start(uint8_t *DirName, uint8_t *FileName)
         DMA2_Channel3->CPAR = 0x40007410;
         DMA2_Channel3->CMAR = (uint32_t) & Wavebuffer;
         DMA2_Channel3->CCR = 0x2091;
+        DBG_MSG("played: %d%%", 100*(WAVE_Format.DataSize-WaveDataLength)/WAVE_Format.DataSize);
     }
     DMA2_Channel3->CCR = 0x0;
 
@@ -605,28 +492,6 @@ static uint32_t ReadUnit(uint8_t *buffer, uint8_t idx, uint8_t NbrOfBytes, Endia
     }
     return Temp;
 }
-
-#if 0
-void WavePlayer_TIM_IT_Handler(void)
-{
-    DBG_MSG("called");
-    /* Set DAC Channel1 DHR register */
-    DAC_SetChannel1Data(DAC_Align_8b_R, Wavebuffer[wavecounter++]);
-    if (wavecounter == 511) {
-        wavecounter = 0;
-        // DFS_ReadFile(&fiwave, sector, Wavebuffer, &var, SECTOR_SIZE);
-        f_read(&fiwave, Wavebuffer, SECTOR_SIZE, &var);
-        DBG_MSG("read: %d", var);
-    }
-
-    /* If we reach the WaveDataLength of the wave to play */
-    if (Decrement_WaveDataLength() == 0) {
-        /* Stop wave playing */
-        WavePlayer_Stop();
-    }
-
-}
-#endif
 
 void WavePlayer_DMA_IT_Handler(void)
 {

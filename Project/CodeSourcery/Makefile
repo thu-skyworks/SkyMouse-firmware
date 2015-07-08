@@ -92,7 +92,7 @@ SRC = $(wildcard $(SRC_DIR)*.c)
 SRC += $(wildcard $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/*.c)
 SRC += $(SRC_DIR)../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c 
 
-SRC += $(wildcard $(SRC_DIR)../Libraries/STM32_USB-FS-Device_Driver/src/*.c)
+# SRC += $(wildcard $(SRC_DIR)../Libraries/STM32_USB-FS-Device_Driver/src/*.c)
 SRC += $(wildcard $(SRC_DIR)../Libraries/STM32_CPAL_Driver/src/*.c)
 SRC += $(wildcard $(SRC_DIR)../Libraries/STM32_CPAL_Driver/devices/stm32f10x/*.c)
 SRC += $(wildcard $(SRC_DIR)usb-msd/src/*.c)
