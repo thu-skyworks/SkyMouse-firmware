@@ -18,6 +18,7 @@
 
 static void Init()
 {
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	SysTick_Init();
 	LED_Config();
 	USARTx_Config(USART_DBG, 115200);
@@ -123,16 +124,17 @@ int main(void)
 	// if(upgradeMode)
 	// 	UpgradeMode_ESP8266();
 
-	// if(USBDevice_PlugIn())
-	// {
-	// 	DBG_MSG( "Usb Init Started");
-	// 	USB_Init();
-	// 	while(true);
-	// }else{
-	// 	DBG_MSG("FileSystem_Init");
-	// 	FileSystem_Init();
-	// 	fileTest();
-	// }
+	if(USBDevice_PlugIn())
+	{
+		DBG_MSG( "Usb Init Started");
+		USB_Init();
+	}else{
+		DBG_MSG("FileSystem_Init");
+		FileSystem_Init();
+		fileTest();
+	}
+
+	while(true);//Stop here
 
 	char color[] = {0xff, 0xff, 0x00};
 	WS2812_Set(0, 3, color);
