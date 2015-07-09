@@ -8,7 +8,6 @@
 #include "usb_lib.h"
 #include "sdio.h"
 #include "ff.h"
-#include "esp8266.h"
 #include "ws2812.h"
 #include "mpu9250.h"
 #include "tmp102.h"
@@ -92,37 +91,11 @@ static void fileTest()
 
 }
 
-static void UpgradeMode_ESP8266(void)
-{
-	if(USBDevice_PlugIn())
-	{
-		Delay_ms(2000);
-		ESP8266_Enable_CDC_Forwarding();
-		DBG_MSG( "Usb Init Started");
-		USB_Init();
-		DBG_MSG( "Usb Init Succeeded");
-	}
-
-	DBG_MSG("ESP8266 Upgrade Mode...");
-	while(true){
-		LED_BLUE(true);
-		Delay_ms(200);
-		LED_BLUE(false);
-		Delay_ms(200);
-	}
-}
-
 int main(void)
 {
-	// bool upgradeMode = ESP8266_UpgradeModeDetected();
-
 	Init();
 
 	DBG_MSG("----- Power On -----");
-	// ESP8266_Init(upgradeMode);
-
-	// if(upgradeMode)
-	// 	UpgradeMode_ESP8266();
 
 	if(USBDevice_PlugIn())
 	{

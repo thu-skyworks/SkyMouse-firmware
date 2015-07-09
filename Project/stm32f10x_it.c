@@ -26,7 +26,6 @@
 #include "usb_lib.h"
 #include "usb_istr.h"
 #include "sdioLL.h"
-#include "esp8266.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
