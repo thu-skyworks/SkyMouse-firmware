@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 void WS2812_Init(void);
-void WS2812_Set(uint32_t offset, uint32_t size, char* data);
+void WS2812_Set(void);
 
 #endif
 

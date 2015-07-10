@@ -5,26 +5,32 @@ Original Code: https://github.com/Daedaluz/stm32-ws2812/
 #include "ws2812.h"
 #include "common.h"
 
-#define BUFFER_SIZE (3*24 + 42)
 
-static uint16_t write_buffer[BUFFER_SIZE];
+/*
+任务：修改本代码，实现3个WS2812 LED点亮，并尝试点亮各种颜色
+提示：请阅读WS2812的手册，理解修改本代码，点亮另外2个LED。
+     由于一个LED需要24位的数据，因此增加的数据为48位。你
+     需要修改的代码包含但不限于DMA传输量、数组大小和数组的
+     初始化过程。注意发送完所有LED的的数据后等待reset时间
+     （即保持输出0一段时间）。
+*/
 
-//#define CMPH 17
-//#define CMPL 9
+static uint16_t write_buffer[66];
 
 #define CMPH 8
 #define CMPL 2
-void WS2812_Set(uint32_t offset, uint32_t size, char* data) {
-    uint32_t x = 0;
-    for(x = 0; x < size; x++) {
-        write_buffer[((x+offset)*8)+0] = (data[x] & 0x80) ? CMPH:CMPL;
-        write_buffer[((x+offset)*8)+1] = (data[x] & 0x40) ? CMPH:CMPL;
-        write_buffer[((x+offset)*8)+2] = (data[x] & 0x20) ? CMPH:CMPL;
-        write_buffer[((x+offset)*8)+3] = (data[x] & 0x10) ? CMPH:CMPL;
-        write_buffer[((x+offset)*8)+4] = (data[x] & 0x08) ? CMPH:CMPL;
-        write_buffer[((x+offset)*8)+5] = (data[x] & 0x04) ? CMPH:CMPL;
-        write_buffer[((x+offset)*8)+6] = (data[x] & 0x02) ? CMPH:CMPL;
-        write_buffer[((x+offset)*8)+7] = (data[x] & 0x01) ? CMPH:CMPL;
+void WS2812_Set() {
+    for (int i = 0; i < 8; ++i)
+    {
+        write_buffer[i] = CMPH;
+    }
+    for (int i = 8; i < 16; ++i)
+    {
+        write_buffer[i] = CMPL;
+    }
+    for (int i = 16; i < 24; ++i)
+    {
+        write_buffer[i] = CMPH;
     }
 }
 
@@ -42,7 +48,7 @@ void WS2812_Init() {
         .DMA_PeripheralBaseAddr = (uint32_t)&WS2812_PWM_TIM->CH2CCR(WS2812_TIM_CH),
         .DMA_MemoryBaseAddr = (uint32_t)(&write_buffer[0]),
         .DMA_DIR = DMA_DIR_PeripheralDST,
-        .DMA_BufferSize = BUFFER_SIZE,
+        .DMA_BufferSize = 66,
         .DMA_PeripheralInc = DMA_PeripheralInc_Disable,
         .DMA_MemoryInc = DMA_MemoryInc_Enable,
         .DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord,
@@ -53,9 +59,7 @@ void WS2812_Init() {
     };
 
     TIM_TimeBaseInitTypeDef tim_init = {
-    //  .TIM_Prescaler = 2,
         .TIM_Prescaler = 8,
-    //  .TIM_Period = 29,
         .TIM_Period = 9,
         .TIM_ClockDivision = TIM_CKD_DIV1,
         .TIM_CounterMode = TIM_CounterMode_Up
