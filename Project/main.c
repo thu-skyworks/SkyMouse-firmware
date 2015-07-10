@@ -23,7 +23,7 @@ static void Init()
 	USARTx_Config(USART_DBG, 115200);
 	Motor_Init();
 	USBCommon_Init();
-	// WS2812_Init();
+	WS2812_Init();
 	I2C_Lib_Init();
 }
 
@@ -86,6 +86,17 @@ int main(void)
 	// WavePlayer_Init();
 	// WavePlayerMenu_Start("/", "test.wav");
 
+	//设置三个WS2812 LED的颜色
+	char color[] = {0xff, 0xff, 0x00};
+	WS2812_Set(0, 3, color);
+	color[0] = 0x00;
+	color[2] = 0xff;
+	WS2812_Set(3, 3, color);
+	color[0] = 0xff;
+	color[1] = 0x00;
+	WS2812_Set(6, 3, color);
+
+	//如果检测到USB线插入，就尝试连接计算机
 	if(USBDevice_PlugIn())
 	{
 		DBG_MSG( "Usb Init Started");
