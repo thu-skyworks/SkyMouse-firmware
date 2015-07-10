@@ -8,8 +8,11 @@
 #include "tmp102.h"
 #include "wave.h"
 #include "waveplayer.h"
+#include "usbcommon.h"
+#include "usb_lib.h"
 #include "ff.h"
 #include "sdio.h"
+#include "ir.h"
 #include "func.h"
 
 static void Init()
@@ -19,6 +22,8 @@ static void Init()
 	LED_Config();
 	USARTx_Config(USART_DBG, 115200);
 	Motor_Init();
+	USBCommon_Init();
+	// WS2812_Init();
 	I2C_Lib_Init();
 }
 
@@ -73,14 +78,24 @@ int main(void)
 	printf("TMP102 temperature: %f\r\n", TMP102_GetTemp());
 
 	//调用信号发生器程序
-	WaveGeneration_Init();
-	WaveGeneration_Start();
+	// WaveGeneration_Init();
+	// WaveGeneration_Start();
 
 	//音乐播放器demo，若要使用，请注释掉上面WaveGeneration的两个函数
-	Delay_ms(2000);
-	FileSystem_Init();
-	WavePlayer_Init();
-	WavePlayerMenu_Start("/", "test.wav");
+	// FileSystem_Init();
+	// WavePlayer_Init();
+	// WavePlayerMenu_Start("/", "test.wav");
+
+	if(USBDevice_PlugIn())
+	{
+		DBG_MSG( "Usb Init Started");
+		USB_Init();
+	}else{
+		
+	}
+
+	//采样红外传感器的值
+	IR_SampleSensors();
 
 	while(true) {
 	}

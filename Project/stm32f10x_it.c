@@ -142,6 +142,32 @@ void SysTick_Handler(void)
   IncSysTickCounter();
 }
 
+/*******************************************************************************
+* Function Name  : USB_LP_CAN1_RX0_IRQHandler
+* Description    : This function handles USB Low Priority or CAN RX0 interrupts
+*                  requests.
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+void USB_LP_CAN1_RX0_IRQHandler(void)
+{
+  USB_Istr();
+}
+
+/*******************************************************************************
+* Function Name  : USB_FS_WKUP_IRQHandler
+* Description    : This function handles USB WakeUp interrupt request.
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+
+void USBWakeUp_IRQHandler(void)
+{
+  EXTI_ClearITPendingBit(EXTI_Line18);
+}
+
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
