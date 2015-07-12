@@ -6,31 +6,21 @@ Original Code: https://github.com/Daedaluz/stm32-ws2812/
 #include "common.h"
 
 
-/*
-任务：修改本代码，实现3个WS2812 LED点亮，并尝试点亮各种颜色
-提示：请阅读WS2812的手册，理解修改本代码，点亮另外2个LED。
-     由于一个LED需要24位的数据，因此增加的数据为48位。你
-     需要修改的代码包含但不限于DMA传输量、数组大小和数组的
-     初始化过程。注意发送完所有LED的的数据后等待reset时间
-     （即保持输出0一段时间）。
-*/
-
-static uint16_t write_buffer[66];
+static uint16_t write_buffer[3*24+50];
 
 #define CMPH 8
 #define CMPL 2
 void WS2812_Set() {
-    for (int i = 0; i < 8; ++i)
+    int k = 0;
+    uint8_t colors[] = {0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff};
+    for (int i = 0; i < sizeof(colors); ++i)
     {
-        write_buffer[i] = CMPH;
-    }
-    for (int i = 8; i < 16; ++i)
-    {
-        write_buffer[i] = CMPL;
-    }
-    for (int i = 16; i < 24; ++i)
-    {
-        write_buffer[i] = CMPH;
+        uint8_t byte = colors[i];
+        for (int j = 0; j < 8; ++j)
+        {
+            write_buffer[k++] = (byte&0x80) ? CMPH : CMPL;
+            byte <<= 1;
+        }
     }
 }
 
@@ -48,7 +38,7 @@ void WS2812_Init() {
         .DMA_PeripheralBaseAddr = (uint32_t)&WS2812_PWM_TIM->CH2CCR(WS2812_TIM_CH),
         .DMA_MemoryBaseAddr = (uint32_t)(&write_buffer[0]),
         .DMA_DIR = DMA_DIR_PeripheralDST,
-        .DMA_BufferSize = 66,
+        .DMA_BufferSize = sizeof(write_buffer),
         .DMA_PeripheralInc = DMA_PeripheralInc_Disable,
         .DMA_MemoryInc = DMA_MemoryInc_Enable,
         .DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord,

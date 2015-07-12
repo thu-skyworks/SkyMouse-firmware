@@ -50,18 +50,18 @@ void ADC_DMA_Init(volatile uint16_t *ADCConvertedValues, uint32_t size)
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
     DMA_DeInit(DMA1_Channel1);
-    
-    /* YOUR CODE HERE 
-    任务：设置DMA_InitStructure的各个成员，用于初始化DMA，使其将ADC1采样到的值
-         自动地存储到ADCConvertedValues数组中，存储值的数量由size参数指定。
-    提示：DMA的源地址应当为ADC1的DR寄存器（该寄存器中保存着每次转换的值，且每次转换
-         会覆盖上一次的值），目的地址是ADCConvertedValues，传输长度为size。请思考
-         源和目标的地址自增功能分别如何设置。另外，为了配合ADC自动循环采样，DMA模式
-         为循环模式。
-    相关函数：
-        STM32固件库函数手册的DMA_Init函数的描述中，包含了DMA_InitTypeDef结构体各
-        成员的设置方法。
-    */
+    DMA_InitStructure.DMA_PeripheralBaseAddr = &ADC1->DR;
+    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADCConvertedValues;
+    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+    DMA_InitStructure.DMA_BufferSize = size;
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+    DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+    DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+
 
     DMA_Init(DMA1_Channel1, &DMA_InitStructure);
 

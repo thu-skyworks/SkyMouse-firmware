@@ -79,17 +79,15 @@ uint16_t MAL_Write(uint8_t lun, uint32_t Memory_Offset, uint32_t *Writebuff, uin
   switch (lun)
   {
     case 0:
-    /* YOUR CODE HERE 
-    任务：实现USB写入存储卡的接口函数
-    提示：USB库通过该函数写入存储卡，其中Memory_Offset为写入存储卡的内存偏移量，
-         Readbuff为写入内容的缓冲区，Transfer_Length为写入的长度。
-         存储卡的驱动接口请参考diskio.c（该文件用于文件系统写存储卡）中disk_write
-         函数的实现，需要注意的是disk_write中的偏移单位为块（即512字节），而此处的
-         偏移量单位是字节。
-    相关函数：
-        SD_WriteMultiBlocks、SD_WaitWriteOperation
-        使用方法可参考sdio.c开头部分的说明
-    */
+      Status = SD_WriteMultiBlocks((uint8_t*)Writebuff, Memory_Offset, Transfer_Length,1);
+      SD_WaitWriteOperation();  
+      while(SD_GetStatus() != SD_TRANSFER_OK);
+      if ( Status != SD_OK )
+      {
+        return MAL_FAIL;
+      }      
+      break;
+
     default:
       return MAL_FAIL;
   }
@@ -109,17 +107,13 @@ uint16_t MAL_Read(uint8_t lun, uint32_t Memory_Offset, uint32_t *Readbuff, uint1
   switch (lun)
   {
     case 0:
-    /* YOUR CODE HERE 
-    任务：实现USB读取存储卡的接口函数
-    提示：USB库通过该函数读取存储卡，其中Memory_Offset为读取存储卡的内存偏移量，
-         Readbuff为读取内容的目标缓冲区，Transfer_Length为读取的长度。
-         存储卡的驱动接口请参考diskio.c（该文件用于文件系统读存储卡）中disk_read
-         函数的实现，需要注意的是disk_read中的偏移单位为块（即512字节），而此处的
-         偏移量单位是字节。
-    相关函数：
-        SD_ReadMultiBlocks、SD_WaitReadOperation
-        使用方法可参考sdio.c开头部分的说明
-    */
+      Status = SD_ReadMultiBlocks((uint8_t*)Readbuff, Memory_Offset, Transfer_Length, 1);
+      SD_WaitReadOperation();
+      while(SD_GetStatus() != SD_TRANSFER_OK);
+      if ( Status != SD_OK )
+      {
+        return MAL_FAIL;
+      }
       break;
     default:
       return MAL_FAIL;
